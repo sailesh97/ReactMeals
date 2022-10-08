@@ -7,12 +7,13 @@ const AvailableMeals = () => {
     const { REACT_APP_API_ENDPOINT: getMealsURI } = process.env;
 
     const [meals, setMeals] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         const fetchMeals = async () => {
-            console.log("URL--",getMealsURI)
             const response = await fetch(`${getMealsURI}`);
             const responseData = await response.json();
-            console.log("Response Data--", responseData)
+    
             const loadedMeals = [];
 
             for (const key in responseData) {
@@ -24,10 +25,17 @@ const AvailableMeals = () => {
                 });
             }
             setMeals(loadedMeals);
+            setIsLoading(false);
         };
 
         fetchMeals();
     }, [getMealsURI])
+
+    if(isLoading){
+        return <section className={classes.MealsLoading}>
+            <p>Loading...</p>
+        </section>
+    }
 
     const mealsList = meals.map(meal => (
         <MealItem
